@@ -27,3 +27,23 @@ code {
   max-height: 100px;
   object-fit: cover;
 }
+
+
+/* navbar */
+
+/* Custom CSS */
+.login-link {
+  font-weight: bold;
+  border-radius: 25px;
+  margin-right: -70px;
+}
+
+.register-link {
+  font-weight: bold;
+  border-radius: 25px;
+  margin-right: 600px;
+}
+
+.navbar-brand{
+  margin-right: -70px;
+}

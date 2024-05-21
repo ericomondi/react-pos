@@ -13,13 +13,13 @@ function POSPage() {
   const [totalAmount, setTotalAmount] = useState(0);
 
   const toastOptions = {
-    autoClose: 50000,
+    autoClose: 180,
     // pauseOnHover: true,
   };
 
   const fetchProducts = async () => {
     setIsLoading(true);
-    const result = await axios.get("http://localhost:5000/products");
+    const result = await axios.get("http://localhost:8000/products");
     setProducts(await result.data);
     setIsLoading(false);
   };

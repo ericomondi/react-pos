@@ -10,6 +10,8 @@ function MainLayout({children}) {
       <nav className="navbar navbar-light bg-primary">
         <div className="container">
           <Link to="/" className="navbar-brand">DevPOS</Link>
+          <Link to="/login" className="btn btn-primary login-link">Login</Link>
+          <Link to="/register" className="btn btn-primary register-link">Register</Link>
         </div>
       </nav>
     </header>
