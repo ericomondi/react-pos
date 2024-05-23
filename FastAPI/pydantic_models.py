@@ -1,11 +1,18 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import List
 
-class CreateUserRequest(BaseModel):
-    username: str
-    password: str
 
+class CreateUserRequest(BaseModel):
+    username: str 
+    email: str
+    password: str
+    
+
+class LoginUserRequest(BaseModel):
+    email: str 
+    password: str
+    
 
 class Token(BaseModel):
     access_token: str
@@ -32,3 +39,9 @@ class CartPayload(BaseModel):
 class TokenVerifyRequest(BaseModel):
     token: str
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    new_password: str
+    

@@ -7,24 +7,21 @@ import authTree2 from "../img/authTree2.png";
 import authMask from "../img/authMask.png";
 import checkBox from "../img/square.png";
 import Oauth from "../components/Oauth";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function LoginPage() {
+function ForgotPasswordPage() {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     let formContent = {
-      // username: username,
       email: email,
-      password: password,
     };
     try {
-      const apiUrl = "http://127.0.0.1:8000/auth/login";
+      const apiUrl = "http://127.0.0.1:8000/auth/forgot-password";
       const response = await axios.post(apiUrl, formContent, {
         headers: {
           "Content-Type": "application/json",
@@ -33,16 +30,34 @@ function LoginPage() {
       console.log("Done.", response.data);
       const responseData = response.data;
       console.log("test", responseData);
-      localStorage.setItem("token", responseData.access_token);
-      localStorage.setItem("isLoggedIn", true.toString()); //  login status to local storage
-      setIsLoggedIn(true);
-      navigate("/");
+      toast.success("Password reset email sent successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
       console.error(error);
+      toast.error(
+        "An error occurred while sending the reset email. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
     }
   };
   return (
     <>
+      <ToastContainer />
       <div id="__next">
         <div className="layout-wrapper MuiBox-root css-33gw4">
           <div className="app-content MuiBox-root css-1bguz3s">
@@ -57,10 +72,10 @@ function LoginPage() {
                   </div>
                   <div className="MuiBox-root css-1fobf8d">
                     <h5 className="MuiTypography-root MuiTypography-h5 css-vsfzib">
-                      Welcome to 👋🏻
+                      Password Reset👋🏻
                     </h5>
                     <p className="MuiTypography-root MuiTypography-body2 css-4yvesp">
-                      Please sign-in to your account and start the adventure
+                      Please enter email to reset password
                     </p>
                   </div>
                   <form
@@ -81,7 +96,7 @@ function LoginPage() {
                           aria-invalid="false"
                           autoFocus=""
                           id="email"
-                          placeholder="email"
+                          placeholder="Email"
                           className="MuiOutlinedInput-input MuiInputBase-input css-dxkv36"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -96,79 +111,22 @@ function LoginPage() {
                         </fieldset>
                       </div>
                     </div>
-                    <div className="MuiFormControl-root MuiFormControl-fullWidth css-tzsjye">
-                      <label
-                        className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1dwrxu1"
-                        data-shrink="false"
-                        htmlFor="auth-login-password"
-                      ></label>
-                      <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-mm5uz0">
-                        <input
-                          type="password"
-                          aria-invalid="false"
-                          id="auth-login-password"
-                          placeholder="Password"
-                          //   value=""
-                          className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-3g8nu5"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <div className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1pycjxc">
-                          <button
-                            className="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-sacmst"
-                            tabIndex="0"
-                            type="button"
-                            aria-label="toggle password visibility"
-                          >
-                            O
-                          </button>
-                        </div>
-                        <fieldset
-                          aria-hidden="true"
-                          className="MuiOutlinedInput-notchedOutline css-igs3ac"
-                        >
-                          <legend className="css-1ftyaf0">
-                            <span>Password</span>
-                          </legend>
-                        </fieldset>
-                      </div>
-                    </div>
+                    
                     <div className="MuiBox-root css-1hb7t2u">
                       <label className="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-1ccfs5r">
-                        <span className="MuiCheckbox-root MuiCheckbox-colorPrimary MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorPrimary PrivateSwitchBase-root css-vwfnud">
-                          <input
-                            type="checkbox"
-                            className="PrivateSwitchBase-input css-1m9pwf3"
-                            data-indeterminate="false"
-                          />
-                          <img src={checkBox} alt="" />
-                        </span>
-                        <span className="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-11l6ixd">
-                          Remember Me
-                        </span>
                       </label>
-                      <a href="/forgot-password" className="css-dmdf8o">
-                        Forgot Password?
+                      <a href="/login" className="css-dmdf8o">
+                        Back to login
                       </a>
                     </div>
+
                     <button
                       className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-fullWidth MuiButtonBase-root css-irqdl1"
                       tabIndex="0"
                       type="submit"
                     >
-                      Login
+                      Send Reset Email
                     </button>
-                    <div className="MuiBox-root css-z0xj7h">
-                      <p className="MuiTypography-root MuiTypography-body2 css-yg3dyq">
-                        New on our platform?
-                      </p>
-                      <p className="MuiTypography-root MuiTypography-body2 css-4yvesp">
-                        <a href="/register" className="css-dmdf8o">
-                          Create an account
-                        </a>
-                      </p>
-                    </div>
-                    <Oauth />
                   </form>
                 </div>
               </div>
@@ -183,4 +141,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default ForgotPasswordPage;

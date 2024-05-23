@@ -1,11 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/login.css";
 import authTree from "../img/authTree.png";
 import authTree2 from "../img/authTree2.png";
 import authMask from "../img/authMask.png";
 import Oauth from "../components/Oauth";
+import { useNavigate } from "react-router-dom";
+import axios from "axios"
 
 function RegisterPage() {
+  const navigate = useNavigate();
+  const [username, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let formContent = {
+      username: username,
+      email: email,
+      password: password,
+    };
+    try {
+      const apiUrl = "http://127.0.0.1:8000/auth/register";
+      const response = await axios.post(apiUrl, formContent, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Done.", response.data);
+      const responseData = response.data;
+      console.log("test", responseData);
+
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <>
       <div id="__next">
@@ -28,7 +58,7 @@ function RegisterPage() {
                       Make your app management easy and fun!
                     </p>
                   </div>
-                  <form novalidate="" autocomplete="off">
+                  <form novalidate="" autocomplete="off" onSubmit={handleSubmit}>
                     <div className="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-nbxxrn">
                       <label
                         className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1dwrxu1"
@@ -36,7 +66,7 @@ function RegisterPage() {
                         for="username"
                         id="username-label"
                       >
-                        Username
+                        {/* Username */}
                       </label>
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1wt7s0s">
                         <input
@@ -45,6 +75,9 @@ function RegisterPage() {
                           autofocus=""
                           id="username"
                           className="MuiOutlinedInput-input MuiInputBase-input css-dxkv36"
+                          value={username}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder="Username"
                         />
                         <fieldset
                           aria-hidden="true"
@@ -61,13 +94,16 @@ function RegisterPage() {
                         className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1dwrxu1"
                         data-shrink="false"
                       >
-                        Email
+                        {/* Email */}
                       </label>
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1wt7s0s">
                         <input
                           type="email"
                           aria-invalid="false"
                           className="MuiOutlinedInput-input MuiInputBase-input css-dxkv36"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Email"
                         />
                         <fieldset
                           aria-hidden="true"
@@ -85,15 +121,17 @@ function RegisterPage() {
                         data-shrink="false"
                         for="auth-register-password"
                       >
-                        Password
+                        {/* Password */}
                       </label>
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-mm5uz0">
                         <input
                           type="password"
                           aria-invalid="false"
                           id="auth-register-password"
-                          value=""
                           className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-3g8nu5"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Password"
                         />
                         <div className="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1pycjxc">
                           <button
@@ -146,33 +184,18 @@ function RegisterPage() {
                         Already have an account?
                       </p>
                       <p className="MuiTypography-root MuiTypography-body2 css-4yvesp">
-                        <a
-                          href="/login"
-                          className="css-dmdf8o"
-                        >
+                        <a href="/login" className="css-dmdf8o">
                           Sign in instead
                         </a>
                       </p>
                     </div>
-                   <Oauth/>
+                    <Oauth />
                   </form>
                 </div>
               </div>
-              <img
-                alt="tree"
-                src={authTree}
-                className="css-1lwg88w"
-              />
-              <img
-                alt="mask"
-                src={authMask}
-                className="css-84vgca"
-              />
-              <img
-                alt="tree-2"
-                src={authTree2}
-                className="css-c0oycv"
-              />
+              <img alt="tree" src={authTree} className="css-1lwg88w" />
+              <img alt="mask" src={authMask} className="css-84vgca" />
+              <img alt="tree-2" src={authTree2} className="css-c0oycv" />
             </div>
           </div>
         </div>
