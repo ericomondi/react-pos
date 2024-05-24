@@ -5,12 +5,12 @@ import trophy from "../img/trophy.png";
 import triangle from "../img/triangle-light.png";
 import profile from "../img/profile.png";
 import Sidebar from "../components/Sidebar";
-import toggleContainer from "../styles/bar";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
     <>
-      <div id="__next">
+      <div >
         <div className="layout-wrapper css-uinsfl">
           {/* ============== SIDEBAR STRAT================== */}
           <Sidebar />
@@ -18,20 +18,7 @@ const Dashboard = () => {
           <div className="layout-content-wrapper MuiBox-root css-34b9xr">
             <header className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAppBar-root MuiAppBar-colorDefault MuiAppBar-positionStatic layout-navbar css-1omfavb">
               <div className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular navbar-content-container css-6h6gtn">
-
                 <div className="MuiBox-root css-12d2mry">
-                <button className="toggle-btn" onClick={toggleContainer}>
-                  <svg
-                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv"
-                    focusable="false"
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    data-testid="MenuIcon"
-                  >
-                    <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"></path>
-                  </svg>
-                </button>
-
                   <div className="actions-left MuiBox-root css-10kuq41">
                     <div className="MuiFormControl-root MuiTextField-root css-7wnaot">
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedStart css-1jqhuxz">
@@ -140,13 +127,16 @@ const Dashboard = () => {
                         <h5 className="MuiTypography-root MuiTypography-h5 css-t9prvq">
                           $42.8k
                         </h5>
-                        <button
-                          className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root css-6mtojy"
-                          tabindex="0"
-                          type="button"
-                        >
-                          View Sales
-                        </button>
+                        <Link to="/pos">
+                          {" "}
+                          <button
+                            className="MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeSmall MuiButton-containedSizeSmall MuiButtonBase-root css-6mtojy"
+                            tabindex="0"
+                            type="button"
+                          >
+                            View Sales
+                          </button>
+                        </Link>
                         <img
                           alt="triangle background"
                           src={triangle}

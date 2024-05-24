@@ -1,13 +1,29 @@
 import React, { useState } from "react";
-
+import toggleContainer from "../styles/bar";
+import "../styles/sidebar.css";
+import { Link } from "react-router-dom";
 const Sidebar = () => {
-
   return (
     <>
+      <button
+        className="toggle-btn MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-sizeMedium css-14wop6h "
+        onClick={toggleContainer}
+      >
+        <svg
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv"
+          focusable="false"
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          data-testid="MenuIcon"
+        >
+          <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"></path>
+        </svg>
+      </button>
       <div className="MuiDrawer-root MuiDrawer-docked layout-vertical-nav css-agsicw my-container">
+        
         <div
           className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiDrawer-paper MuiDrawer-paperAnchorLeft MuiDrawer-paperAnchorDockedLeft css-14dfcda"
-          style={{ pointerEvents: "none" }}
+          // style={{ pointerEvents: "none" }}
         >
           <div className="nav-header MuiBox-root css-1ae0pmy">
             <a
@@ -21,8 +37,11 @@ const Sidebar = () => {
             </a>
           </div>
           <div className="MuiBox-root css-ku0lyd"></div>
+          
+          
           <div className="MuiBox-root css-esnmos">
             <div>
+              
               <div className="MuiBox-root css-zf9gw9">
                 <ul className="MuiList-root MuiList-padding nav-items css-102l5x0">
                   <li className="MuiListItem-root MuiListItem-gutters nav-link css-12ph425">
@@ -86,11 +105,10 @@ const Sidebar = () => {
                     </div>
                   </li>
                   <li className="MuiListItem-root MuiListItem-gutters nav-link css-12ph425">
-                    <a
+                    <Link
                       className="MuiListItemButton-root MuiListItemButton-gutters MuiButtonBase-root css-76jj4r"
                       tabindex="0"
-                      target="_blank"
-                      href="/materio-mui-react-nextjs-admin-template-free/pages/login/"
+                      to="/pos"
                     >
                       <div className="MuiListItemIcon-root css-f4apo4">
                         <svg
@@ -105,10 +123,10 @@ const Sidebar = () => {
                       </div>
                       <div className="MuiBox-root css-v86rxk">
                         <p className="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-1vq8avp">
-                          Login
+                          Make Sale
                         </p>
                       </div>
-                    </a>
+                    </Link>
                   </li>
                   <li className="MuiListItem-root MuiListItem-gutters nav-link css-12ph425">
                     <a
@@ -136,11 +154,11 @@ const Sidebar = () => {
                     </a>
                   </li>
                   <li className="MuiListItem-root MuiListItem-gutters nav-link css-12ph425">
-                    <a
+                    <Link
                       className="MuiListItemButton-root MuiListItemButton-gutters MuiButtonBase-root css-76jj4r"
                       tabindex="0"
-                      target="_blank"
-                      href="/materio-mui-react-nextjs-admin-template-free/pages/error/"
+                    
+                      to="/logout"
                     >
                       <div className="MuiListItemIcon-root css-f4apo4">
                         <svg
@@ -155,10 +173,10 @@ const Sidebar = () => {
                       </div>
                       <div className="MuiBox-root css-v86rxk">
                         <p className="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap css-1vq8avp">
-                          Error
+                          Logout
                         </p>
                       </div>
-                    </a>
+                    </Link>
                   </li>
                   <li className="MuiListSubheader-root MuiListSubheader-gutters MuiListSubheader-sticky nav-section-title css-1jj11xz">
                     <div
