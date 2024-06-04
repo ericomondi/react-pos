@@ -8,6 +8,9 @@ from sqlalchemy.exc import SQLAlchemyError
 import auth
 from auth import get_active_user
 from fastapi.middleware.cors import CORSMiddleware
+import sentry_sdk
+
+
 
 
 app = FastAPI()
@@ -106,3 +109,20 @@ async def create_order(db: db_dependency, user:user_dependency, order_payload: C
     db.commit()
 
     return {"message": "Order created successfully", "order_id": new_order_instance.order_id}
+
+
+
+sentry_sdk.init(
+    dsn="https://916b3a8a09ad77b34d76539db1ea7276@o4507367433568256.ingest.de.sentry.io/4507367467909200",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
+
+@app.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0

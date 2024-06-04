@@ -8,6 +8,10 @@ import ForgotPasswordPage from "./components/ForgotPassword";
 import ResetPasswordPage from "./components/ResetPasswords";
 import Logout from "./pages/Logout";
 import Dashboard from "./pages/Dashboard";
+import Layout from "./layouts/Layout";
+import AccountSettings from "./pages/AccountSettings";
+import Security from "./components/Security";
+import Info from "./components/Info";
 function App() {
   return (
     <Router>
@@ -15,12 +19,17 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={< ResetPasswordPage/>} />
-        <Route path="/logout" element={< Logout/>} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/logout" element={<Logout />} />
         <Route element={<PrivateRoutes />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/pos" element={<POSPage />} />
+          <Route element={<Layout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/account-settings" element={<AccountSettings />} />
+            <Route path="/pos" element={<POSPage />} />
+            <Route path="/security" element={<Security />} />
+            <Route path="/info" element={<Info />} />
+          </Route>
         </Route>
       </Routes>
     </Router>

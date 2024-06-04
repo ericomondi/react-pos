@@ -6,10 +6,21 @@ const Sidebar = () => {
   return (
     <>
       <button
+        style={{
+          marginRight: "10px",
+          padding: "10px"
+        }}
         className="toggle-btn MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-sizeMedium css-14wop6h "
         onClick={toggleContainer}
       >
         <svg
+          style={{
+            position: "fixed",
+            top: "0",
+            zIndex: "1000", // Ensure the header stays on top of other content
+            backgroundColor: "#f8f9fa", // Example background color
+            marginTop: "20px",
+          }}
           class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-vubbuv"
           focusable="false"
           aria-hidden="true"
@@ -19,8 +30,10 @@ const Sidebar = () => {
           <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"></path>
         </svg>
       </button>
-      <div className="MuiDrawer-root MuiDrawer-docked layout-vertical-nav css-agsicw my-container">
-        
+      <div
+        style={{ display: "none" }}
+        className="MuiDrawer-root MuiDrawer-docked layout-vertical-nav css-agsicw my-container"
+      >
         <div
           className="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiDrawer-paper MuiDrawer-paperAnchorLeft MuiDrawer-paperAnchorDockedLeft css-14dfcda"
           // style={{ pointerEvents: "none" }}
@@ -32,23 +45,21 @@ const Sidebar = () => {
             >
               Logo
               <h6 className="MuiTypography-root MuiTypography-h6 css-trc3hh">
-                Materio
+                Bussiness
               </h6>
             </a>
           </div>
           <div className="MuiBox-root css-ku0lyd"></div>
-          
-          
+
           <div className="MuiBox-root css-esnmos">
             <div>
-              
               <div className="MuiBox-root css-zf9gw9">
                 <ul className="MuiList-root MuiList-padding nav-items css-102l5x0">
                   <li className="MuiListItem-root MuiListItem-gutters nav-link css-12ph425">
-                    <a
+                    <Link
                       className="MuiListItemButton-root MuiListItemButton-gutters MuiButtonBase-root active css-76jj4r"
                       tabindex="0"
-                      href="/materio-mui-react-nextjs-admin-template-free/"
+                      to="/dashboard"
                     >
                       <div className="MuiListItemIcon-root css-f4apo4">
                         <svg
@@ -66,13 +77,13 @@ const Sidebar = () => {
                           Dashboard
                         </p>
                       </div>
-                    </a>
+                    </Link>
                   </li>
                   <li className="MuiListItem-root MuiListItem-gutters nav-link css-12ph425">
-                    <a
+                    <Link
                       className="MuiListItemButton-root MuiListItemButton-gutters MuiButtonBase-root css-76jj4r"
                       tabindex="0"
-                      href="/materio-mui-react-nextjs-admin-template-free/account-settings/"
+                      to="/account-settings"
                     >
                       <div className="MuiListItemIcon-root css-f4apo4">
                         <svg
@@ -90,7 +101,7 @@ const Sidebar = () => {
                           Account Settings
                         </p>
                       </div>
-                    </a>
+                    </Link>
                   </li>
                   <li className="MuiListSubheader-root MuiListSubheader-gutters MuiListSubheader-sticky nav-section-title css-1jj11xz">
                     <div
@@ -157,7 +168,6 @@ const Sidebar = () => {
                     <Link
                       className="MuiListItemButton-root MuiListItemButton-gutters MuiButtonBase-root css-76jj4r"
                       tabindex="0"
-                    
                       to="/logout"
                     >
                       <div className="MuiListItemIcon-root css-f4apo4">

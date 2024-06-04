@@ -13,21 +13,21 @@ const toggleContainer = (function () {
     }
   }
 
-  // Initially hide the container on small screens
-  function checkScreenSize() {
-    var container = document.querySelector(".my-container");
-    if (container) {
-      if (window.innerWidth <= 768) {
-        container.style.display = "none";
-      } else {
-        container.style.display = "block";
-      }
-    }
-  }
+  // // Initially hide the container on small screens
+  // function checkScreenSize() {
+  //   var container = document.querySelector(".my-container");
+  //   if (container) {
+  //     if (window.innerWidth <= 768) {
+  //       container.style.display = "none";
+  //     } else {
+  //       container.style.display = "block";
+  //     }
+  //   }
+  // }
 
-  // Check screen size on load and on resize
-  window.addEventListener("load", checkScreenSize);
-  window.addEventListener("resize", checkScreenSize);
+  // // Check screen size on load and on resize
+  // window.addEventListener("load", checkScreenSize);
+  // window.addEventListener("resize", checkScreenSize);
 
   return toggle;
 })();

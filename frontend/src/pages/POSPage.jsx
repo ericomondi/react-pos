@@ -123,7 +123,6 @@ function POSPage() {
   }, [cart]);
 
   return (
-    <MainLayout>
       <div className="row">
         <div className="col-lg-8">
           {isLoading ? (
@@ -218,7 +217,6 @@ function POSPage() {
           </div>
         </div>
       </div>
-    </MainLayout>
   );
 }
 
