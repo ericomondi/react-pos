@@ -21,16 +21,16 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/logout" element={<Logout />} />
-        <Route element={<PrivateRoutes />}>
+        {/* <Route element={<PrivateRoutes />}> */}
           <Route element={<Layout />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/pos" element={<POSPage />} />
             <Route path="/security" element={<Security />} />
             <Route path="/info" element={<Info />} />
           </Route>
-        </Route>
+        {/* </Route> */}
       </Routes>
     </Router>
   );
