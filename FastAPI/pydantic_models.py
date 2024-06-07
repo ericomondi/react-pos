@@ -45,3 +45,6 @@ class ForgotPasswordRequest(BaseModel):
 class ResetPasswordRequest(BaseModel):
     new_password: str
     
+class TokenVerificationResponse(BaseModel):
+    username: str
+    tokenverification: str

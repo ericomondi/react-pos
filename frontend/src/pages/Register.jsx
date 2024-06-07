@@ -58,7 +58,7 @@ function RegisterPage() {
                       Make your app management easy and fun!
                     </p>
                   </div>
-                  <form novalidate="" autocomplete="off" onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit}>
                     <div className="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-nbxxrn">
                       <label
                         className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1dwrxu1"
@@ -71,8 +71,6 @@ function RegisterPage() {
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1wt7s0s">
                         <input
                           type="text"
-                          aria-invalid="false"
-                          autofocus=""
                           id="username"
                           className="MuiOutlinedInput-input MuiInputBase-input css-dxkv36"
                           value={username}
@@ -99,7 +97,6 @@ function RegisterPage() {
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1wt7s0s">
                         <input
                           type="email"
-                          aria-invalid="false"
                           className="MuiOutlinedInput-input MuiInputBase-input css-dxkv36"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -126,8 +123,6 @@ function RegisterPage() {
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-mm5uz0">
                         <input
                           type="password"
-                          aria-invalid="false"
-                          id="auth-register-password"
                           className="MuiOutlinedInput-input MuiInputBase-input MuiInputBase-inputAdornedEnd css-3g8nu5"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}

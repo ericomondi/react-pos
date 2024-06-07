@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState} from "react";
 import { useNavigate } from "react-router-dom";
 import trophy from "../img/trophy.png";
 import triangle from "../img/triangle-light.png";
 import { Link } from "react-router-dom";
+import GetActiveUser from "../components/GetActiveUser";
 
 const Dashboard = () => {
+  const [username, setUsername] = useState(null);
   return (
     <>
       <div>
@@ -14,7 +16,14 @@ const Dashboard = () => {
               <div className="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-19gxiau">
                 <div className="MuiCardContent-root css-12evlce">
                   <h6 className="MuiTypography-root MuiTypography-h6 css-14t9e1w">
-                    Congratulations John! 🥳
+                    <div>
+                      <GetActiveUser setUsername={setUsername} />
+                      {username ? (
+                        <div>Welcome, {username} ! 🥳</div>
+                      ) : (
+                        <div>Loading...</div>
+                      )}
+                    </div>{" "}
                   </h6>
                   <p className="MuiTypography-root MuiTypography-body2 css-gbbljn">
                     Best seller of the month

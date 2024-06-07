@@ -22,7 +22,7 @@ const PrivateRoutes = () => {
             });
             const responseData = await response.json();
             console.log(responseData); // Log the raw response data for debugging
-            if (responseData === "Token verified successfully") {
+            if (responseData["tokenverification"] === "success" ) {
               setIsAuthenticated(true);
             } else {
               throw new Error('Failed to validate token');
@@ -32,7 +32,6 @@ const PrivateRoutes = () => {
             setIsAuthenticated(false);
           }
     };
-
     fetchAuthStatus();
 
     // Start polling for token validity

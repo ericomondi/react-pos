@@ -382,7 +382,6 @@ const AccountSettings = () => {
                   </div>
                 </div>
               </form>
-              <Security/>
             </div>
           </div>
           <div

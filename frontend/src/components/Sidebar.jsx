@@ -140,11 +140,10 @@ const Sidebar = () => {
                     </Link>
                   </li>
                   <li className="MuiListItem-root MuiListItem-gutters nav-link css-12ph425">
-                    <a
+                    <Link
                       className="MuiListItemButton-root MuiListItemButton-gutters MuiButtonBase-root css-76jj4r"
                       tabindex="0"
-                      target="_blank"
-                      href="/materio-mui-react-nextjs-admin-template-free/pages/register/"
+                      to="/register"
                     >
                       <div className="MuiListItemIcon-root css-f4apo4">
                         <svg
@@ -162,7 +161,7 @@ const Sidebar = () => {
                           Register
                         </p>
                       </div>
-                    </a>
+                    </Link>
                   </li>
                   <li className="MuiListItem-root MuiListItem-gutters nav-link css-12ph425">
                     <Link
@@ -324,7 +323,7 @@ const Sidebar = () => {
               </div>
             </div>
           </div>
-          <div className="MuiBox-root css-a9n7s9">
+          {/* <div className="MuiBox-root css-a9n7s9">
             <a
               target="_blank"
               rel="noreferrer"
@@ -336,7 +335,7 @@ const Sidebar = () => {
                 src="/materio-mui-react-nextjs-admin-template-free/images/misc/upgrade-banner-light.png"
               />
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

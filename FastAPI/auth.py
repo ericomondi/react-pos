@@ -15,6 +15,7 @@ from pydantic_models import (
     LoginUserRequest,
     ForgotPasswordRequest,
     ResetPasswordRequest,
+    TokenVerificationResponse
 )
 from passlib.context import CryptContext
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
@@ -102,7 +103,7 @@ async def get_active_user(token: Annotated[str, Depends(oauth2_bearer)]):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-@router.post("/verify-token", response_model=str, status_code=status.HTTP_200_OK)
+@router.post("/verify-token", response_model=TokenVerificationResponse, status_code=status.HTTP_200_OK)
 async def verify_token(request_body: TokenVerifyRequest):
     try:
         # Decode the token
@@ -112,6 +113,9 @@ async def verify_token(request_body: TokenVerifyRequest):
         exp_timestamp = float(payload["exp"])
         exp_datetime = datetime.fromtimestamp(exp_timestamp)
 
+        #get username
+        username = payload["sub"]
+
         # Check if the token has expired
         current_time = datetime.utcnow()
         if exp_datetime < current_time:
@@ -120,7 +124,7 @@ async def verify_token(request_body: TokenVerifyRequest):
             )
 
         # Token is valid, return a success message
-        return "Token verified successfully"
+        return {"username": username, "tokenverification": "success"}
 
     except JWTError:
         raise HTTPException(
@@ -188,6 +192,6 @@ async def reset_password( token,
         raise HTTPException(status_code=401, detail="Token has expired.")
     except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Invalid token.")
+    
 
-
-
+ 
