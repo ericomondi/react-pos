@@ -18,13 +18,25 @@ port = '25060'
 database = 'dukaapp'
 username = 'doadmin'
 
-URL_DATABASE = f'mysql+pymysql://{username}:{password}@{host}:{port}/{database}?ssl_mode=REQUIRED'
-engine =create_engine(URL_DATABASE)
+URL_DATABASE = f'mysql+pymysql://{username}:{password}@{host}:{port}/{database}'
+
+# SSL parameters
+ssl_args = {
+    "ssl": {
+        "ssl_ca": "/path/to/ca-cert.pem",
+        "ssl_cert": "/path/to/client-cert.pem",
+        "ssl_key": "/path/to/client-key.pem",
+    }
+}
+
+# Create the engine with SSL parameters
+engine = create_engine(URL_DATABASE, connect_args=ssl_args)
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
 
 
 def get_db():
