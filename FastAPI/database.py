@@ -7,30 +7,33 @@ from sqlalchemy.orm import Session
 
 
 
-# password = 'dmore#2020'
-# URL_DATABASE = f'mysql+pymysql://root:{password}@localhost:3306/dukaapp'
+password = 'dmore#2020'
+URL_DATABASE = f'mysql+pymysql://root:{password}@localhost:3306/dukaapp'
+engine = create_engine(URL_DATABASE)
 
 
-# DigitalOcean MySQL connection string
-password = 'AVNS_M8ZtofRr9rgsSrwbYlU'
-host = 'dbaas-db-4002324-do-user-16851886-0.c.db.ondigitalocean.com'
-port = '25060'
-database = 'dukaapp'
-username = 'doadmin'
 
-URL_DATABASE = f'mysql+pymysql://{username}:{password}@{host}:{port}/{database}'
+# # DigitalOcean MySQL connection string
+# password = 'AVNS_M8ZtofRr9rgsSrwbYlU '
+# host = 'dbaas-db-4002324-do-user-16851886-0.c.db.ondigitalocean.com'
+# port = '25060'
+# database = 'dukaapp'
+# username = 'doadmin'
 
-# SSL parameters
-ssl_args = {
-    "ssl": {
-        "ssl_ca": "/path/to/ca-cert.pem",
-        "ssl_cert": "/path/to/client-cert.pem",
-        "ssl_key": "/path/to/client-key.pem",
-    }
-}
+# URL_DATABASE = f'mysql+pymysql://{username}:{password}@{host}:{port}/{database}'
 
-# Create the engine with SSL parameters
-engine = create_engine(URL_DATABASE, connect_args=ssl_args)
+# # SSL parameters
+# ssl_args = {
+#     "ssl": {
+#         "ssl_ca": "/path/to/ca-cert.pem",
+#         "ssl_cert": "/path/to/client-cert.pem",
+#         "ssl_key": "/path/to/client-key.pem",
+#     }
+# }
+
+# # Create the engine with SSL parameters
+# engine = create_engine(URL_DATABASE, connect_args=ssl_args)
+
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

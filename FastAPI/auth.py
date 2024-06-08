@@ -6,7 +6,7 @@ from starlette import status
 from database import SessionLocal
 from models import Users
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from jose import jwt, JWTError
+import jwt
 from database import db_dependency
 from pydantic_models import (
     CreateUserRequest,
@@ -27,6 +27,7 @@ SECRETKEY_KEY = "7bc621fbc40de68f79b84a3922992194655724e9df7e2b8d684e01073395104
 ALGORITHM = "HS256"
 bycrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 
 conf = ConnectionConfig(
     MAIL_USERNAME="ericoochieng456@gmail.com",
@@ -99,7 +100,7 @@ async def get_active_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.JWTError:
+    except jwt.DecodeError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
@@ -109,7 +110,6 @@ async def verify_token(request_body: TokenVerifyRequest):
         # Decode the token
         payload = jwt.decode(request_body.token, SECRETKEY_KEY, algorithms=[ALGORITHM])
 
-        # Convert exp to a datetime object
         exp_timestamp = float(payload["exp"])
         exp_datetime = datetime.fromtimestamp(exp_timestamp)
 
@@ -126,7 +126,7 @@ async def verify_token(request_body: TokenVerifyRequest):
         # Token is valid, return a success message
         return {"username": username, "tokenverification": "success"}
 
-    except JWTError:
+    except jwt.DecodeError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
         )
@@ -190,7 +190,7 @@ async def reset_password( token,
 
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired.")
-    except jwt.JWTError:
+    except jwt.DecodeError:
         raise HTTPException(status_code=401, detail="Invalid token.")
     
 
