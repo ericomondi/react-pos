@@ -36,7 +36,7 @@ function LoginPage() {
       localStorage.setItem("token", responseData.access_token);
       localStorage.setItem("isLoggedIn", true.toString()); //  login status to local storage
       setIsLoggedIn(true);
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
