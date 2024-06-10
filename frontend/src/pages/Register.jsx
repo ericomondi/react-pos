@@ -72,7 +72,7 @@ function RegisterPage() {
                         <input
                           type="text"
                           id="username"
-                          className="MuiOutlinedInput-input MuiInputBase-input css-dxkv36"
+                          className="MuiOutlinedInput-input MuiInputBase-input css-3g8nu5"
                           value={username}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder="Username"
@@ -97,7 +97,7 @@ function RegisterPage() {
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1wt7s0s">
                         <input
                           type="email"
-                          className="MuiOutlinedInput-input MuiInputBase-input css-dxkv36"
+                          className="MuiOutlinedInput-input MuiInputBase-input css-3g8nu5"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="Email"
