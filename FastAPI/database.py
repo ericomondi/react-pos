@@ -34,6 +34,7 @@ ssl_args = {
     }
 }
 
+
 # Create the engine with SSL parameters
 engine = create_engine(URL_DATABASE, connect_args=ssl_args)
 

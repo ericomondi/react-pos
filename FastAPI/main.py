@@ -11,8 +11,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import sentry_sdk
 
 
-
-
 app = FastAPI()
 app.include_router(auth.router)
 models.Base.metadata.create_all(bind=engine)
@@ -20,7 +18,11 @@ models.Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000","http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://64.227.77.230:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -59,22 +61,21 @@ async def add_product(
 
 
 @app.get("/products", status_code=status.HTTP_200_OK)
-async def fetch_products(db: db_dependency, user:user_dependency):
-    id = user.get('id')
+async def fetch_products(db: db_dependency, user: user_dependency):
+    id = user.get("id")
     try:
-        products = (
-            db.query(models.Products)
-            .filter(models.Products.user_id == id)
-            .all()
-        )
+        products = db.query(models.Products).filter(models.Products.user_id == id).all()
         return products
     except SQLAlchemyError:
         raise HTTPException(
             status_code=500, detail="Error fetching products from the db"
         )
 
-@app.post('/create_order', status_code=status.HTTP_201_CREATED)
-async def create_order(db: db_dependency, user:user_dependency, order_payload: CartPayload):
+
+@app.post("/create_order", status_code=status.HTTP_201_CREATED)
+async def create_order(
+    db: db_dependency, user: user_dependency, order_payload: CartPayload
+):
     cart_items = order_payload.cartItems
 
     try:
@@ -88,18 +89,17 @@ async def create_order(db: db_dependency, user:user_dependency, order_payload: C
             detail=f"Failed to initiate the order: {str(e)}",
         )
 
-        
     total_cost = 0
 
     for item in cart_items:
         print("Item id----", item.id)
-        product = db.query(models.Products).filter_by(id=item.id).first() 
+        product = db.query(models.Products).filter_by(id=item.id).first()
         if product:
             order_detail = models.OrderDetails(
                 order_id=new_order_instance.order_id,
                 product_id=product.id,
                 quantity=item.quantity,
-                total_price=product.price * item.quantity
+                total_price=product.price * item.quantity,
             )
             total_cost += order_detail.total_price
             db.add(order_detail)
@@ -108,8 +108,10 @@ async def create_order(db: db_dependency, user:user_dependency, order_payload: C
     new_order_instance.user_id = user.get("id")
     db.commit()
 
-    return {"message": "Order created successfully", "order_id": new_order_instance.order_id}
-
+    return {
+        "message": "Order created successfully",
+        "order_id": new_order_instance.order_id,
+    }
 
 
 sentry_sdk.init(
@@ -123,6 +125,8 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
 )
 
-@app.get("/sentry-debug")
-async def trigger_error():
-    division_by_zero = 1 / 0
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
