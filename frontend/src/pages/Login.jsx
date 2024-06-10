@@ -82,7 +82,7 @@ function LoginPage() {
                           autoFocus=""
                           id="email"
                           placeholder="email"
-                          className="MuiOutlinedInput-input MuiInputBase-input css-dxkv36"
+                          className="MuiOutlinedInput-input MuiInputBase-input css-3g8nu5"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                         />
