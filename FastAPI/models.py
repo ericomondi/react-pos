@@ -25,7 +25,7 @@ class Products(Base):
     name = Column(String(100), unique=True, nullable=False, index=True)
     cost = Column(Numeric(precision=14, scale=2), nullable=False)
     price = Column(Numeric(precision=14, scale=2), nullable=False)
-    img_url = Column(String(100))
+    img_url = Column(String(100), nullable=True)
     stock_quantity = Column(Numeric(precision=14, scale=2), nullable=False)
     created_at = Column(DateTime, default=func.now())
     user_id = Column(Integer, ForeignKey('users.id'))

@@ -4,9 +4,51 @@ import trophy from "../img/trophy.png";
 import triangle from "../img/triangle-light.png";
 import { Link } from "react-router-dom";
 import GetActiveUser from "../components/GetActiveUser";
+import axios from "axios";
 
 const Dashboard = () => {
   const [username, setUsername] = useState(null);
+  const [totalSales, setTotalSales] = useState(0)
+  const [totalProducts, setProducts] = useState(0)
+  const [salesPerUser, setSalePerUser] = useState(0)
+
+  const fetchDashboard = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found in localStorage");
+        return;
+      }
+      
+  
+      const response = await axios.get("http://127.0.0.1:8000/dashboard", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      console.log("Response:", response.data);
+      setTotalSales(response.data["total_sales"])
+      setProducts(response.data["total_products"])
+      setSalePerUser(response.data["sales_per_user"])
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status other than 200 range
+        console.error("Error response:", error.response.data);
+        console.error("Status code:", error.response.status);
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error("Error request:", error.request);
+      } else {
+        // Something else happened in setting up the request
+        console.error("Error message:", error.message);
+      }
+    }
+  };
+  
+  // Call the function to test it
+  fetchDashboard();
   return (
     <>
       <div>
@@ -29,7 +71,7 @@ const Dashboard = () => {
                     Best seller of the month
                   </p>
                   <h5 className="MuiTypography-root MuiTypography-h5 css-t9prvq">
-                    $42.8k
+                    {salesPerUser} Ksh
                   </h5>
                   <Link to="/pos">
                     {" "}
@@ -103,7 +145,7 @@ const Dashboard = () => {
                             Sales
                           </span>
                           <h6 className="MuiTypography-root MuiTypography-h6 css-14t9e1w">
-                            245k
+                            {totalSales} Ksh
                           </h6>
                         </div>
                       </div>
@@ -149,7 +191,7 @@ const Dashboard = () => {
                             Products
                           </span>
                           <h6 className="MuiTypography-root MuiTypography-h6 css-14t9e1w">
-                            1.54k
+                            {totalProducts} items
                           </h6>
                         </div>
                       </div>

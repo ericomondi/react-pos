@@ -9,7 +9,7 @@ import auth
 from auth import get_active_user
 from fastapi.middleware.cors import CORSMiddleware
 import sentry_sdk
-
+from sqlalchemy import func
 
 app = FastAPI()
 app.include_router(auth.router)
@@ -114,6 +114,30 @@ async def create_order(
     }
 
 
+from fastapi.responses import JSONResponse
+
+
+@app.get("/dashboard", response_class=JSONResponse)
+def dashboard(db: db_dependency, user:user_dependency):
+    id =  user.get("id")
+    # total sales
+    total_sales = db.query(func.sum(models.Orders.total)).scalar()
+
+    # total products
+    total_products = db.query(func.count(models.Products.id)).scalar()
+
+    # sales per user
+    sales_per_user = db.query(
+        models.Orders.user_id,
+        func.sum(models.Orders.total).label('total_sales')
+    ).filter(models.Orders.user_id == id).group_by(models.Orders.user_id).all()
+    result = {"user_sale": float(total_sales) for user_id, total_sales in sales_per_user}
+    user_sale = result["user_sale"]
+
+
+    return {"total_sales": total_sales, "total_products": total_products, "sales_per_user": user_sale}
+
+
 sentry_sdk.init(
     dsn="https://916b3a8a09ad77b34d76539db1ea7276@o4507367433568256.ingest.de.sentry.io/4507367467909200",
     # Set traces_sample_rate to 1.0 to capture 100%
@@ -126,7 +150,8 @@ sentry_sdk.init(
 )
 
 
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, port=8000)
 
