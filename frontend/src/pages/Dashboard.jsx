@@ -1,16 +1,18 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import trophy from "../img/trophy.png";
 import triangle from "../img/triangle-light.png";
 import { Link } from "react-router-dom";
 import GetActiveUser from "../components/GetActiveUser";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
   const [username, setUsername] = useState(null);
-  const [totalSales, setTotalSales] = useState(0)
-  const [totalProducts, setProducts] = useState(0)
-  const [salesPerUser, setSalePerUser] = useState(0)
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalProducts, setProducts] = useState(0);
+  const [salesPerUser, setSalePerUser] = useState(0);
 
   const fetchDashboard = async () => {
     try {
@@ -19,19 +21,19 @@ const Dashboard = () => {
         console.error("No token found in localStorage");
         return;
       }
-      
-  
+
       const response = await axios.get("http://64.227.77.230:8000/dashboard", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       console.log("Response:", response.data);
-      setTotalSales(response.data["total_sales"])
-      setProducts(response.data["total_products"])
-      setSalePerUser(response.data["sales_per_user"])
+      toast.success("Welcome back", username);
+      setTotalSales(response.data["total_sales"]);
+      setProducts(response.data["total_products"]);
+      setSalePerUser(response.data["sales_per_user"]);
     } catch (error) {
       if (error.response) {
         // Server responded with a status other than 200 range
@@ -46,12 +48,14 @@ const Dashboard = () => {
       }
     }
   };
-  
+
   // Call the function to test it
   fetchDashboard();
   return (
     <>
       <div>
+        <ToastContainer />
+
         <div className="css-zo3z3e">
           <div className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-6 css-h2qpui">
             <div className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-4 css-19egsyp">

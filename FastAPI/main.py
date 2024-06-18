@@ -131,6 +131,7 @@ def dashboard(db: db_dependency, user:user_dependency):
         models.Orders.user_id,
         func.sum(models.Orders.total).label('total_sales')
     ).filter(models.Orders.user_id == id).group_by(models.Orders.user_id).all()
+    
     result = {"user_sale": float(total_sales) for user_id, total_sales in sales_per_user}
     user_sale = result["user_sale"]
 
