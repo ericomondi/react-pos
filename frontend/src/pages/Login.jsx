@@ -24,7 +24,7 @@ function LoginPage() {
       password: password,
     };
     try {
-      const apiUrl = "http://64.227.77.230:8000/auth/login";
+      const apiUrl = "http://147.182.202.104:8000/auth/login";
       const response = await axios.post(apiUrl, formContent, {
         headers: {
           "Content-Type": "application/json",
