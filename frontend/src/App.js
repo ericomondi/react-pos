@@ -12,9 +12,25 @@ import Layout from "./layouts/Layout";
 import AccountSettings from "./pages/AccountSettings";
 import Security from "./components/Security";
 import Info from "./components/Info";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// import Prod
 function App() {
   return (
     <Router>
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        progressClassName="toast-progress-bar"
+      />
+
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

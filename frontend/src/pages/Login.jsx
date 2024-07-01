@@ -7,6 +7,8 @@ import authTree2 from "../img/authTree2.png";
 import authMask from "../img/authMask.png";
 import checkBox from "../img/square.png";
 import Oauth from "../components/Oauth";
+import { toast } from "react-toastify";
+
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -30,6 +32,7 @@ function LoginPage() {
           "Content-Type": "application/json",
         },
       });
+      toast.success("Login Succesfull")
       console.log("Done.", response.data);
       const responseData = response.data;
       console.log("test", responseData);
@@ -39,6 +42,7 @@ function LoginPage() {
       navigate("/");
     } catch (error) {
       console.error(error);
+      toast.error("An error occured please try again")
     }
   };
   return (

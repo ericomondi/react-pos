@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import authTree from "../img/authTree.png";
 import authTree2 from "../img/authTree2.png";
 import authMask from "../img/authMask.png";
+import { toast } from "react-toastify";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Logout = () => {
     e.preventDefault();
     localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
+    toast.success("Logged Out")
     navigate("/login");
   };
   return (

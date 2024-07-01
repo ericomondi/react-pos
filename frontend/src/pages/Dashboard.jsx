@@ -5,8 +5,7 @@ import triangle from "../img/triangle-light.png";
 import { Link } from "react-router-dom";
 import GetActiveUser from "../components/GetActiveUser";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import {  toast } from "react-toastify";
 
 const Dashboard = () => {
   const [username, setUsername] = useState(null);
@@ -30,7 +29,6 @@ const Dashboard = () => {
       });
 
       console.log("Response:", response.data);
-      toast.success("Welcome back", username);
       setTotalSales(response.data["total_sales"]);
       setProducts(response.data["total_products"]);
       setSalePerUser(response.data["sales_per_user"]);
@@ -54,7 +52,6 @@ const Dashboard = () => {
   return (
     <>
       <div>
-        <ToastContainer />
 
         <div className="css-zo3z3e">
           <div className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-6 css-h2qpui">

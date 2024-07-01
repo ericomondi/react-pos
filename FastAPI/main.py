@@ -77,7 +77,8 @@ async def fetch_products(db: db_dependency, user: user_dependency):
 async def create_order(
     db: db_dependency, user: user_dependency, order_payload: CartPayload
 ):
-    cart_items = order_payload.cartItems
+    cart_items = order_payload.cart
+    print("cart items", cart_items)
 
     try:
         new_order_instance = models.Orders()  # Create an instance of the Orders model
