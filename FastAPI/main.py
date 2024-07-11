@@ -19,11 +19,7 @@ models.Base.metadata.create_all(bind=engine)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://64.227.77.230:3000",
-        "http://147.182.202.104:3000",
-        "http://147.182.202.104",
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],

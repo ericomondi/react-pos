@@ -6,6 +6,13 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 
+# SQLite database URL (for an in-memory database, use ':memory:')
+URL_DATABASE = 'sqlite:///dukaapp.db'
+engine = create_engine(URL_DATABASE)
+
+
+
+
 
 # password = 'dmore#2020'
 # URL_DATABASE = f'mysql+pymysql://root:{password}@localhost:3306/dukaapp'
@@ -13,30 +20,30 @@ from sqlalchemy.orm import Session
 
 
 
-# DigitalOcean MySQL connection string
-username = "doadmin"
-password = "AVNS_ujQbMOy8ujIMwNPUz8e"
-host = "dbaas-db-4002324-do-user-16851886-0.c.db.ondigitalocean.com"
-port = "25060"
-database = "dukaapp"
-sslmode = "REQUIRED"
+# # DigitalOcean MySQL connection string
+# username = "doadmin"
+# password = "AVNS_ujQbMOy8ujIMwNPUz8e"
+# host = "dbaas-db-4002324-do-user-16851886-0.c.db.ondigitalocean.com"
+# port = "25060"
+# database = "dukaapp"
+# sslmode = "REQUIRED"
 
-URL_DATABASE = f'mysql+pymysql://{username}:{password}@{host}:{port}/{database}'
-
-
-
-# SSL parameters
-ssl_args = {
-    "ssl": {
-        "ssl_ca": "/path/to/ca-cert.pem",
-        "ssl_cert": "/path/to/client-cert.pem",
-        "ssl_key": "/path/to/client-key.pem",
-    }
-}
+# URL_DATABASE = f'mysql+pymysql://{username}:{password}@{host}:{port}/{database}'
 
 
-# Create the engine with SSL parameters
-engine = create_engine(URL_DATABASE, connect_args=ssl_args)
+
+# # SSL parameters
+# ssl_args = {
+#     "ssl": {
+#         "ssl_ca": "/path/to/ca-cert.pem",
+#         "ssl_cert": "/path/to/client-cert.pem",
+#         "ssl_key": "/path/to/client-key.pem",
+#     }
+# }
+
+
+# # Create the engine with SSL parameters
+# engine = create_engine(URL_DATABASE, connect_args=ssl_args)
 
 
 

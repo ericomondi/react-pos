@@ -21,7 +21,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await axios.get("http://147.182.202.104:8000/dashboard", {
+      const response = await axios.get("http://127.0.0.1:8000/dashboard", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

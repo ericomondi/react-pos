@@ -5,6 +5,7 @@ import { ComponentToPrint } from "../components/ComponentToPrint";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "react-toastify";
 import DataTable from "react-data-table-component";
+import AddProduct from "../components/AddProduct";
 
 function POSPage() {
   // component
@@ -24,7 +25,7 @@ function POSPage() {
     setIsLoading(true);
 
     try {
-      const result = await axios.get("http://147.182.202.104:8000/products", {
+      const result = await axios.get("http://127.0.0.1:8000/products", {
         headers: {
           // "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -117,6 +118,9 @@ function POSPage() {
       toast(`Removed ${product.name} from cart`);
     }
   };
+  const ClearCart = async () => {
+    setCart([]);
+  };
 
   const removeProduct = async (product) => {
     const newCart = cart.filter((cartItem) => cartItem.id !== product.id);
@@ -150,7 +154,7 @@ function POSPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://147.182.202.104:8000/create_order",
+        "http://127.0.0.1:8000/create_order",
         {
           cart,
         },
@@ -161,8 +165,8 @@ function POSPage() {
           },
         }
       );
-      localStorage.removeItem("shopping-cart");
       console.log("Cart submitted successfully:", response.data);
+      ClearCart();
       toast.success("Order inserted successfully");
     } catch (error) {
       toast.error("An error occured");
@@ -233,6 +237,7 @@ function POSPage() {
           highlightOnHover
           selectableRows
         />
+        <AddProduct />
       </div>
       {/* <div className="col-lg-8">
         {isLoading ? (
