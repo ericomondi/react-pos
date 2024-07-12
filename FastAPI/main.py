@@ -18,12 +18,10 @@ models.Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "*"
-    ],
+    allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
 )
 
 user_dependency = Annotated[dict, Depends(get_active_user)]
@@ -117,8 +115,8 @@ from fastapi.responses import JSONResponse
 
 
 @app.get("/dashboard", response_class=JSONResponse)
-def dashboard(db: db_dependency, user:user_dependency):
-    id =  user.get("id")
+def dashboard(db: db_dependency, user: user_dependency):
+    id = user.get("id")
     # total sales
     total_sales = db.query(func.sum(models.Orders.total)).scalar()
 
@@ -126,16 +124,25 @@ def dashboard(db: db_dependency, user:user_dependency):
     total_products = db.query(func.count(models.Products.id)).scalar()
 
     # sales per user
-    sales_per_user = db.query(
-        models.Orders.user_id,
-        func.sum(models.Orders.total).label('total_sales')
-    ).filter(models.Orders.user_id == id).group_by(models.Orders.user_id).all()
-    
-    result = {"user_sale": float(total_sales) for user_id, total_sales in sales_per_user}
+    sales_per_user = (
+        db.query(
+            models.Orders.user_id, func.sum(models.Orders.total).label("total_sales")
+        )
+        .filter(models.Orders.user_id == id)
+        .group_by(models.Orders.user_id)
+        .all()
+    )
+
+    result = {
+        "user_sale": float(total_sales) for user_id, total_sales in sales_per_user
+    }
     user_sale = result["user_sale"]
 
-
-    return {"total_sales": total_sales, "total_products": total_products, "sales_per_user": user_sale}
+    return {
+        "total_sales": total_sales,
+        "total_products": total_products,
+        "sales_per_user": user_sale,
+    }
 
 
 sentry_sdk.init(
@@ -150,8 +157,7 @@ sentry_sdk.init(
 )
 
 
-
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
 
+    uvicorn.run(app, host="0.0.0.0", port=8000)
