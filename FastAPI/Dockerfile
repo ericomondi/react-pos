@@ -14,6 +14,10 @@ RUN apt-get update && apt-get install -y \
 # Copy the requirements.txt file into the container at /app
 COPY requirements.txt /app/
 
+
+# Install PostgreSQL development libraries
+RUN apt-get update && apt-get install -y gcc libpq-dev
+
 # Install any Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
