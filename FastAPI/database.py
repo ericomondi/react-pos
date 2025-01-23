@@ -6,19 +6,19 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 
-# # SQLite database URL (for an in-memory database, use ':memory:')
+# SQLite database URL (for an in-memory database, use ':memory:')
 # URL_DATABASE = 'sqlite:///dukaapp.db'
 # engine = create_engine(URL_DATABASE)
 
 
-URL_DATABASE = 'postgresql://postgres:12345@172.17.0.1:5432/mydatabase'
-engine = create_engine(URL_DATABASE)
-
-
-
-# password = 'dmore#2020'
-# URL_DATABASE = f'mysql+pymysql://root:{password}@localhost:3306/dukaapp'
+# URL_DATABASE = 'postgresql://postgres:12345@172.17.0.1:5432/mydatabase'
 # engine = create_engine(URL_DATABASE)
+
+
+
+password = 'dmore#2020'
+URL_DATABASE = f'mysql+pymysql://root:{password}@localhost:3306/dukaapp'
+engine = create_engine(URL_DATABASE)
 
 
 

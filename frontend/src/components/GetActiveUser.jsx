@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const TOKEN_VALIDATE_URL = "http://159.223.232.167:8000/auth/verify-token";
+const TOKEN_VALIDATE_URL = "http://127.0.0.1:8000/auth/verify-token";
 
 const GetActiveUser = ({ setUsername }) => {
   useEffect(() => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 
-const TOKEN_VALIDATE_URL = "http://159.223.232.167:8000/auth/verify-token";
+const TOKEN_VALIDATE_URL = "http://127.0.0.1:8000/auth/verify-token";
 
 const PrivateRoutes = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);

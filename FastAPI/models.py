@@ -11,7 +11,7 @@ class Users(Base):
     email = Column(String(200), unique=True)
     hashed_password = Column(String(256))
     created_at = Column(DateTime, default=func.now())
-
+ 
     # Relationship to Orders
     orders = relationship("Orders", back_populates="user")
 

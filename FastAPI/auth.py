@@ -23,7 +23,7 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-SECRETKEY_KEY = "7bc621fbc40de68f79b84a3922992194655724e9df7e2b8d684e01073395104f"
+SECRETKEY_KEY = ""
 ALGORITHM = "HS256"
 bycrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")

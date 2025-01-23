@@ -26,21 +26,29 @@ class ProductsBase(BaseModel):
     img_url: str
     stock_quantity: int
 
-class CartItem(BaseModel):
-    cost: int
-    id: int
-    img_url: str
-    created_at: str
-    name: str
-    price: int
-    quantity: int
-    stock_quantity: int
-    totalAmount: int
-    user_id: int
+# class CartItem(BaseModel):
+#     cost: int
+#     id: int
+#     img_url: str
+#     created_at: str
+#     name: str
+#     price: int
+#     quantity: int
+#     stock_quantity: int
+#     totalAmount: int
+#     user_id: int
 
+
+# class CartPayload(BaseModel):
+#     cart: List[CartItem]    
+
+
+class CartItem(BaseModel):
+    id: int
+    quantity: int
 
 class CartPayload(BaseModel):
-    cart: List[CartItem]    
+    cart: List[CartItem]
 
 
 

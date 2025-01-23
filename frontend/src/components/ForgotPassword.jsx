@@ -21,7 +21,7 @@ function ForgotPasswordPage() {
       email: email,
     };
     try {
-      const apiUrl = "http://159.223.232.167:8000/auth/forgot-password";
+      const apiUrl = "http://127.0.0.1:8000/auth/forgot-password";
       const response = await axios.post(apiUrl, formContent, {
         headers: {
           "Content-Type": "application/json",

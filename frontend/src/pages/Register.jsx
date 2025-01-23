@@ -21,7 +21,7 @@ function RegisterPage() {
       password: password,
     };
     try {
-      const apiUrl = "http://159.223.232.167:8000/auth/register";
+      const apiUrl = "http://127.0.0.1:8000/auth/register";
       const response = await axios.post(apiUrl, formContent, {
         headers: {
           "Content-Type": "application/json",

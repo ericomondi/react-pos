@@ -58,9 +58,11 @@ async def add_product(
 
 @app.get("/products", status_code=status.HTTP_200_OK)
 async def fetch_products(db: db_dependency, user: user_dependency):
-    id = user.get("id")
+    # id = user.get("id")
     try:
-        products = db.query(models.Products).filter(models.Products.user_id == id).all()
+        # products = db.query(models.Products).filter(models.Products.user_id == id).all()
+        products = db.query(models.Products).all()
+        print("PRoducts........" , products)
         return products
     except SQLAlchemyError:
         raise HTTPException(
