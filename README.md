@@ -1,5 +1,6 @@
 
 <h1>Create a Point of Sale System</h1>
+A smart pos with functional barcode system
 <h1>React + nodejs server</h1>
 
 <h1>How To Set Up the Project</h1>
