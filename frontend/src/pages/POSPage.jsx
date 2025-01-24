@@ -14,6 +14,7 @@ function POSPage() {
   const [cart, setCart] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [array, setArray] = useState([]);
+  const [barcode, setBarcode] = useState(""); // For handling scanned input
 
   const fetchProducts = async () => {
     const token = localStorage.getItem("token");
@@ -127,6 +128,26 @@ function POSPage() {
     setCart(newCart);
   };
 
+  const handleBarcodeInput = async (barcode) => {
+    try {
+      console.log(`Searching for product with barcode: ${barcode}`);
+      const result = await axios.get(
+        `http://localhost:8000/products?barcode=${barcode}`
+      );
+
+      if (result.data.length > 0) {
+        console.log("Product found:", result.data[0]);
+        addProductToCart(result.data[0]); // Add the product to the cart
+        toast.success("Product added to cart!");
+      } else {
+        toast.error("Product not found!");
+      }
+    } catch (error) {
+      console.error("Error handling barcode input:", error);
+      toast.error("Error handling barcode input");
+    }
+  };
+
   const componentRef = useRef();
 
   const handleReactToPrint = useReactToPrint({
@@ -222,9 +243,18 @@ function POSPage() {
       <div className="col-lg-6">
         <div className="text-end">
           <input
+            id="barcodeInput"
             type="text"
-            onChange={handleFilter}
-            placeholder="Filter by name"
+            value={barcode}
+            onChange={(e) => setBarcode(e.target.value)} // Update state on change
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleBarcodeInput(barcode); // Pass the current barcode value
+                setBarcode(""); // Clear the input field
+              }
+            }}
+            className="form-control"
+            placeholder="Scan barcode here"
           />
           <button onClick={() => setArray(products)}>Reset Filter</button>
         </div>
