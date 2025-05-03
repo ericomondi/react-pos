@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 
 
 password = 'dmore#2020'
-URL_DATABASE = f'mysql+pymysql://root:{password}@localhost:3306/dukaapp'
+URL_DATABASE = f'mysql+pymysql://root:{password}@localhost:3306/react-pos'
 engine = create_engine(URL_DATABASE)
 
 

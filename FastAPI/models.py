@@ -28,6 +28,7 @@ class Products(Base):
     img_url = Column(String(100), nullable=True)
     stock_quantity = Column(Numeric(precision=14, scale=2), nullable=False)
     created_at = Column(DateTime, default=func.now())
+    barcode = Column(Numeric(precision=12))
     user_id = Column(Integer, ForeignKey('users.id'))
 
 

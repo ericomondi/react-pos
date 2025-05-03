@@ -9,7 +9,8 @@ import auth
 from auth import get_active_user
 from fastapi.middleware.cors import CORSMiddleware
 import sentry_sdk
-from sqlalchemy import func
+from sqlalchemy import func, cast, Date
+from datetime import datetime, timedelta
 
 app = FastAPI()
 app.include_router(auth.router)
@@ -45,6 +46,7 @@ async def add_product(
             cost=create_product.cost,
             img_url=create_product.img_url,
             stock_quantity=create_product.stock_quantity,
+            barcode=create_product.barcode,
             user_id=user.get("id"),
         )
         db.add(add_product)
@@ -112,20 +114,37 @@ async def create_order(
         "order_id": new_order_instance.order_id,
     }
 
+@app.get("/orders", status_code=status.HTTP_200_OK)
+async def fetch_orders(db: db_dependency, user: user_dependency):
+    try:
+        topSalesPerUser = db.query(models.Orders).filter(models.Orders.user_id == user.get("id")).all()
+        orders = db.query(models.Orders).all()
+        print("Orders:", orders)
+        return orders
+    except SQLAlchemyError:
+        raise HTTPException(
+            status_code=500, detail="Error fetching orders from the db"
+        )
+
+
 
 from fastapi.responses import JSONResponse
-
 
 @app.get("/dashboard", response_class=JSONResponse)
 def dashboard(db: db_dependency, user: user_dependency):
     id = user.get("id")
-    # total sales
-    total_sales = db.query(func.sum(models.Orders.total)).scalar()
+    
+    # Get today's and yesterday's dates
+    today = datetime.utcnow().date()
+    yesterday = today - timedelta(days=1)
 
-    # total products
-    total_products = db.query(func.count(models.Products.id)).scalar()
+    # Total sales
+    total_sales = db.query(func.sum(models.Orders.total)).scalar() or 0
 
-    # sales per user
+    # Total products
+    total_products = db.query(func.count(models.Products.id)).scalar() or 0
+
+    # Sales per user
     sales_per_user = (
         db.query(
             models.Orders.user_id, func.sum(models.Orders.total).label("total_sales")
@@ -135,15 +154,68 @@ def dashboard(db: db_dependency, user: user_dependency):
         .all()
     )
 
-    result = {
-        "user_sale": float(total_sales) for user_id, total_sales in sales_per_user
-    }
-    user_sale = result["user_sale"]
+    user_sale = {user_id: float(total_sales) for user_id, total_sales in sales_per_user}.get(id, 0)
+
+    # Query sales for today (all users)
+    sales_today = (
+        db.query(
+            models.Orders.user_id,
+            func.sum(models.Orders.total).label("total_revenue"),
+            func.count(models.Orders.order_id).label("total_sales")
+        )
+        .filter(func.date(models.Orders.datetime) == today)
+        .group_by(models.Orders.user_id)
+        .all()
+    )
+
+    # Query today's sales for the logged-in user
+    today_sale_per_user = (
+        db.query(func.sum(models.Orders.total).label("total_revenue"))
+        .filter(models.Orders.user_id == id, func.date(models.Orders.datetime) == today)
+        .scalar() or 0
+    )
+
+    # Query sales for yesterday
+    sales_yesterday = (
+        db.query(
+            models.Orders.user_id,
+            func.sum(models.Orders.total).label("total_revenue")
+        )
+        .filter(func.date(models.Orders.datetime) == yesterday)
+        .group_by(models.Orders.user_id)
+        .all()
+    )
+
+    # Convert yesterday's sales into a dictionary for easy lookup
+    yesterday_sales_dict = {s.user_id: s.total_revenue for s in sales_yesterday}
+
+    # Prepare user sales data
+    sales_data = []
+    for sale in sales_today:
+        previous_revenue = yesterday_sales_dict.get(sale.user_id, 0)
+        percentage_change = (
+            ((sale.total_revenue - previous_revenue) / previous_revenue) * 100
+            if previous_revenue > 0
+            else 0
+        )
+
+        sales_data.append({
+            "user_id": sale.user_id,
+            "total_revenue": sale.total_revenue,
+            "number_of_sales": sale.total_sales,
+            "percentage_change": round(percentage_change, 2),
+            "change_type": "increase" if percentage_change > 0 else "decrease" if percentage_change < 0 else "neutral"
+        })
+
+    # Sort by total revenue and return top 5 users
+    top_salesmen = sorted(sales_data, key=lambda x: x["total_revenue"], reverse=True)[:5]
 
     return {
         "total_sales": total_sales,
         "total_products": total_products,
         "sales_per_user": user_sale,
+        "top_salesmen": top_salesmen,
+        "todaySalePerUser": today_sale_per_user,  # Logged-in user's sales for today
     }
 
 

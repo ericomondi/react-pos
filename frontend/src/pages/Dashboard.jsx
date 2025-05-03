@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import trophy from "../img/trophy.png";
 import triangle from "../img/triangle-light.png";
 import { Link } from "react-router-dom";
 import GetActiveUser from "../components/GetActiveUser";
 import axios from "axios";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [username, setUsername] = useState(null);
   const [totalSales, setTotalSales] = useState(0);
   const [totalProducts, setProducts] = useState(0);
   const [salesPerUser, setSalePerUser] = useState(0);
+  const [orders, setOrders] = useState([]); // Added state to store orders
+  const [percentageGrowth, setpercentageGrowth] = useState(0)
+  const [ numberOfSales, setNumberOfsales] = useState (0)
+  const [salesToday, setSalesToday] = useState (0)
 
   const fetchDashboard = async () => {
     try {
@@ -29,9 +33,14 @@ const Dashboard = () => {
       });
 
       console.log("Response:", response.data);
+      // console.log("PercentageGrowth", response.data.top_salesmen[0].percentage_change);
+      console.log("Sales poer user.........", response.data["sales_per_user"])
+      setpercentageGrowth(response.data.top_salesmen[0].percentage_change)
       setTotalSales(response.data["total_sales"]);
       setProducts(response.data["total_products"]);
       setSalePerUser(response.data["sales_per_user"]);
+      setNumberOfsales(response.data.top_salesmen[0].number_of_sales)
+      setSalesToday(response.data["todaySalePerUser"])
     } catch (error) {
       if (error.response) {
         // Server responded with a status other than 200 range
@@ -47,12 +56,38 @@ const Dashboard = () => {
     }
   };
 
-  // Call the function to test it
-  fetchDashboard();
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log("Fetching orders...");
+      const result = await axios.get("http://localhost:8000/orders", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (result.data.length > 0) {
+        console.log("Orders fetched:", result.data);
+        setOrders(result.data); // Store orders in state
+        toast.success("Orders fetched successfully!");
+      } else {
+        toast.error("No orders found!");
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      toast.error("Error fetching orders");
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboard(); // Fetch dashboard data when the component mounts
+    fetchOrders(); // Fetch orders when the component mounts
+  }, []);
+  console.log("Ndio hiiiko happaaaaa........", salesPerUser)
   return (
     <>
       <div>
-
         <div className="css-zo3z3e">
           <div className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-6 css-h2qpui">
             <div className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-4 css-19egsyp">
@@ -102,7 +137,7 @@ const Dashboard = () => {
                     </span>
                     <p className="MuiTypography-root MuiTypography-body2 css-4yvesp">
                       <span className="MuiBox-root css-1t7bsaz">
-                        Total 48.5% growth
+                        Total {percentageGrowth}% growth
                       </span>
                       😎 this month
                     </p>
@@ -143,10 +178,10 @@ const Dashboard = () => {
                         </div>
                         <div className="MuiBox-root css-j7qwjs">
                           <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                            Sales
+                            Todays Sale!
                           </span>
                           <h6 className="MuiTypography-root MuiTypography-h6 css-14t9e1w">
-                            {totalSales} Ksh
+                            {salesToday} Ksh
                           </h6>
                         </div>
                       </div>
@@ -166,10 +201,10 @@ const Dashboard = () => {
                         </div>
                         <div className="MuiBox-root css-j7qwjs">
                           <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                            Customers
+                            Sales Completed
                           </span>
                           <h6 className="MuiTypography-root MuiTypography-h6 css-14t9e1w">
-                            12.5k
+                            6
                           </h6>
                         </div>
                       </div>
@@ -215,7 +250,7 @@ const Dashboard = () => {
                             Revenue
                           </span>
                           <h6 className="MuiTypography-root MuiTypography-h6 css-14t9e1w">
-                            $88k
+                          {totalSales} Ksh
                           </h6>
                         </div>
                       </div>
@@ -254,10 +289,10 @@ const Dashboard = () => {
                 <div className="MuiCardContent-root css-1bt8uxn">
                   <div className="MuiBox-root css-17ijxrj">
                     <h5 className="MuiTypography-root MuiTypography-h5 css-l1f2yp">
-                      45%
+                      {percentageGrowth}%
                     </h5>
                     <p className="MuiTypography-root MuiTypography-body2 css-4yvesp">
-                      Your sales performance is 45% 😎 better compared to last
+                      Your sales performance is {percentageGrowth}% 😎 better compared to last
                       month
                     </p>
                   </div>
@@ -637,7 +672,7 @@ const Dashboard = () => {
                 <div className="MuiCardHeader-root css-891gu0">
                   <div className="MuiCardHeader-content css-11qjisw">
                     <span className="MuiTypography-root MuiTypography-h5 MuiCardHeader-title css-zatnkh">
-                      Sales by Countries
+                      Sales by Users
                     </span>
                   </div>
                   <div className="MuiCardHeader-action css-pka4ak">
@@ -1127,6 +1162,7 @@ const Dashboard = () => {
             </div>
             <div className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 css-15j76c0">
               <div className="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1k3q5ab">
+                
                 <div className="MuiTableContainer-root css-939q39">
                   <table
                     className="MuiTable-root css-10y3fr9"
@@ -1138,13 +1174,13 @@ const Dashboard = () => {
                           className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-18drrcl"
                           scope="col"
                         >
-                          Name
+                          Order ID
                         </th>
                         <th
                           className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-18drrcl"
                           scope="col"
                         >
-                          Email
+                          Total
                         </th>
                         <th
                           className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-18drrcl"
@@ -1152,275 +1188,23 @@ const Dashboard = () => {
                         >
                           Date
                         </th>
-                        <th
-                          className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-18drrcl"
-                          scope="col"
-                        >
-                          Salary
-                        </th>
-                        <th
-                          className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-18drrcl"
-                          scope="col"
-                        >
-                          Age
-                        </th>
-                        <th
-                          className="MuiTableCell-root MuiTableCell-head MuiTableCell-sizeMedium css-18drrcl"
-                          scope="col"
-                        >
-                          Status
-                        </th>
+                        
                       </tr>
                     </thead>
                     <tbody className="MuiTableBody-root css-ceeiht">
-                      <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv">
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-2x20pz">
-                          <div className="MuiBox-root css-j7qwjs">
-                            <p className="MuiTypography-root MuiTypography-body1 css-1muldh">
-                              Sally Quinn
-                            </p>
-                            <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                              Human Resources Assistant
-                            </span>
-                          </div>
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          eebsworth2m@sbwire.com
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          09/27/2018
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          $19586.23
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          27
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          <div className="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorPrimary MuiChip-filledPrimary css-lvr0df">
-                            <span className="MuiChip-label MuiChip-labelMedium css-14vsv3w">
-                              current
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv">
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-2x20pz">
-                          <div className="MuiBox-root css-j7qwjs">
-                            <p className="MuiTypography-root MuiTypography-body1 css-1muldh">
-                              Margaret Bowers
-                            </p>
-                            <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                              Nuclear Power Engineer
-                            </span>
-                          </div>
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          kocrevy0@thetimes.co.uk
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          09/23/2016
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          $23896.35
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          61
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          <div className="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorSuccess MuiChip-filledSuccess css-rzoen8">
-                            <span className="MuiChip-label MuiChip-labelMedium css-14vsv3w">
-                              professional
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv">
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-2x20pz">
-                          <div className="MuiBox-root css-j7qwjs">
-                            <p className="MuiTypography-root MuiTypography-body1 css-1muldh">
-                              Minnie Roy
-                            </p>
-                            <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                              Environmental Specialist
-                            </span>
-                          </div>
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          ediehn6@163.com
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          10/15/2017
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          $18991.67
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          59
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          <div className="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorError MuiChip-filledError css-ccsiwf">
-                            <span className="MuiChip-label MuiChip-labelMedium css-14vsv3w">
-                              rejected
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv">
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-2x20pz">
-                          <div className="MuiBox-root css-j7qwjs">
-                            <p className="MuiTypography-root MuiTypography-body1 css-1muldh">
-                              Ralph Leonard
-                            </p>
-                            <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                              Sales Representative
-                            </span>
-                          </div>
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          dfalloona@ifeng.com
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          06/12/2018
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          $19252.12
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          30
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          <div className="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorWarning MuiChip-filledWarning css-k6n1sd">
-                            <span className="MuiChip-label MuiChip-labelMedium css-14vsv3w">
-                              resigned
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv">
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-2x20pz">
-                          <div className="MuiBox-root css-j7qwjs">
-                            <p className="MuiTypography-root MuiTypography-body1 css-1muldh">
-                              Annie Martin
-                            </p>
-                            <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                              Operator
-                            </span>
-                          </div>
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          sganderton2@tuttocitta.it
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          03/24/2018
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          $13076.28
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          66
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          <div className="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorInfo MuiChip-filledInfo css-2z10nj">
-                            <span className="MuiChip-label MuiChip-labelMedium css-14vsv3w">
-                              applied
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv">
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-2x20pz">
-                          <div className="MuiBox-root css-j7qwjs">
-                            <p className="MuiTypography-root MuiTypography-body1 css-1muldh">
-                              Adeline Day
-                            </p>
-                            <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                              Senior Cost Accountant
-                            </span>
-                          </div>
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          hnisius4@gnu.org
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          08/25/2017
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          $10909.52
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          33
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          <div className="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorSuccess MuiChip-filledSuccess css-rzoen8">
-                            <span className="MuiChip-label MuiChip-labelMedium css-14vsv3w">
-                              professional
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv">
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-2x20pz">
-                          <div className="MuiBox-root css-j7qwjs">
-                            <p className="MuiTypography-root MuiTypography-body1 css-1muldh">
-                              Lora Jackson
-                            </p>
-                            <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                              Geologist
-                            </span>
-                          </div>
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          ghoneywood5@narod.ru
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          06/01/2017
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          $17803.80
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          61
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          <div className="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorPrimary MuiChip-filledPrimary css-lvr0df">
-                            <span className="MuiChip-label MuiChip-labelMedium css-14vsv3w">
-                              current
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv">
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-2x20pz">
-                          <div className="MuiBox-root css-j7qwjs">
-                            <p className="MuiTypography-root MuiTypography-body1 css-1muldh">
-                              Rodney Sharp
-                            </p>
-                            <span className="MuiTypography-root MuiTypography-caption css-hy29ye">
-                              Cost Accountant
-                            </span>
-                          </div>
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          dcrossman3@google.co.jp
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          12/03/2017
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          $12336.17
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          22
-                        </td>
-                        <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">
-                          <div className="MuiChip-root MuiChip-filled MuiChip-sizeMedium MuiChip-colorSuccess MuiChip-filledSuccess css-rzoen8">
-                            <span className="MuiChip-label MuiChip-labelMedium css-14vsv3w">
-                              professional
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
+                      {orders.length > 0 ? (
+                        orders.map((order) => (
+                          <tr className="MuiTableRow-root MuiTableRow-hover css-lfnorv" key={order.order_id}>
+                            <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">{order.order_id}</td>
+                            <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">{order.total}</td>
+                            <td className="MuiTableCell-root MuiTableCell-body MuiTableCell-sizeMedium css-11u1jp0">{new Date(order.datetime).toLocaleDateString()}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="5">No orders to display</td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

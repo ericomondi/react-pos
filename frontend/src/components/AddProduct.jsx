@@ -9,6 +9,7 @@ const AddProduct = () => {
   const [price, setPrice] = useState();
   const [stockQuantity, setStockQuantity] = useState();
   const [imgUrl, setImgUrl] = useState("");
+  const [barcode, setBarcode] = useState();
 
   const handleProductSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +19,7 @@ const AddProduct = () => {
       price: price,
       stock_quantity: stockQuantity,
       img_url: imgUrl,
+      barcode: barcode
     };
 
     try {
@@ -83,6 +85,17 @@ const AddProduct = () => {
             placeholder="Enter the stock quantity"
             value={stockQuantity}
             onChange={(e) => setStockQuantity(e.target.valueAsNumber)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="barcode">Barcode</label>
+          <input
+            type="number"
+            className="form-control"
+            id="barcode"
+            placeholder="Enter barcode"
+            value={barcode}
+            onChange={(e) => setBarcode(e.target.valueAsNumber)}
           />
         </div>
         <div className="form-group">

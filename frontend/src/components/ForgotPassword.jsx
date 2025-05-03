@@ -87,12 +87,12 @@ function ForgotPasswordPage() {
                       <label
                         className="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-root MuiFormLabel-colorPrimary css-1dwrxu1"
                         data-shrink="false"
-                        htmlFor="email"
+                        // htmlFor="email"
                         id="email-label"
                       ></label>
                       <div className="MuiOutlinedInput-root MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1wt7s0s">
                         <input
-                          type="email"
+                          // type="email"
                           aria-invalid="false"
                           autoFocus=""
                           id="email"

@@ -130,9 +130,16 @@ function POSPage() {
 
   const handleBarcodeInput = async (barcode) => {
     try {
+      const token = localStorage.getItem("token");
       console.log(`Searching for product with barcode: ${barcode}`);
       const result = await axios.get(
-        `http://localhost:8000/products?barcode=${barcode}`
+        `http://localhost:8000/products?barcode=${barcode}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (result.data.length > 0) {
@@ -238,84 +245,59 @@ function POSPage() {
     setArray(newData);
   }
 
+  // SEARCH LOGIC===================================
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (value.length > 0) {
+      const filteredProducts = products.filter((product) =>
+        product.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filteredProducts);
+    } else {
+      setSuggestions([]);
+    }
+  };
+  const handleSelect = (product) => {
+    setSearchTerm(product.name);
+    setSuggestions([]);
+    addProductToCart(product);
+  };
   return (
     <div className="row">
-      <div className="col-lg-6">
-        <div className="text-end">
+      {/* Left Side: Cart Area (8 Columns) */}
+      <div className="col-lg-8">
+        {/* Seacrch bar */}
+        <div className="position-relative mb-3">
           <input
-            id="barcodeInput"
             type="text"
-            value={barcode}
-            onChange={(e) => setBarcode(e.target.value)} // Update state on change
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleBarcodeInput(barcode); // Pass the current barcode value
-                setBarcode(""); // Clear the input field
-              }
-            }}
             className="form-control"
-            placeholder="Scan barcode here"
+            placeholder="Search product..."
+            value={searchTerm}
+            onChange={handleSearchChange}
           />
-          <button onClick={() => setArray(products)}>Reset Filter</button>
-        </div>
-        <DataTable
-          title="Products"
-          columns={columns}
-          data={array}
-          pagination
-          striped
-          highlightOnHover
-          selectableRows
-        />
-      </div>
-      {/* <div className="col-lg-8">
-        {isLoading ? (
-          "Loading"
-        ) : (
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Image</th>
-                <th scope="col">Price</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product, index) => (
-                <tr key={index}>
-                  <td>{product.name}</td>
-                  <td>
-                    <img
-                      src={product.image}
-                      className="img-fluid"
-                      alt={product.name}
-                      style={{ width: "50px" }}
-                    />
-                  </td>
-                  <td>${product.price}</td>
-                  <td>
-                    <button
-                      className="btn btn-primary me-2"
-                      onClick={() => addProductToCart(product)}
-                    >
-                      +
-                    </button>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => RemoveProductToCart(product)}
-                    >
-                      -
-                    </button>
-                  </td>
-                </tr>
+          {suggestions.length > 0 && (
+            <ul
+              className="list-group position-absolute w-100 shadow"
+              style={{ zIndex: 999 }}
+            >
+              {suggestions.map((product) => (
+                <li
+                  key={product.id}
+                  className="list-group-item list-group-item-action"
+                  onClick={() => handleSelect(product)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {product.name}
+                </li>
               ))}
-            </tbody>
-          </table>
-        )}
-      </div> */}
-
-      <div className="col-lg-6">
+            </ul>
+          )}
+        </div>
+        {/* Hidden Component for Print */}
         <div style={{ display: "none" }}>
           <ComponentToPrint
             cart={cart}
@@ -323,6 +305,8 @@ function POSPage() {
             ref={componentRef}
           />
         </div>
+
+        {/* Cart Table */}
         <div className="table-responsive bg-dark">
           <table className="table table-responsive table-dark table-hover">
             <thead>
@@ -336,40 +320,69 @@ function POSPage() {
               </tr>
             </thead>
             <tbody>
-              {cart
-                ? cart.map((cartProduct, key) => (
-                    <tr key={key}>
-                      <td>{cartProduct.id}</td>
-                      <td>{cartProduct.name}</td>
-                      <td>{cartProduct.price}</td>
-                      <td>{cartProduct.quantity}</td>
-                      <td>{cartProduct.totalAmount}</td>
-                      <td>
+              {cart.length > 0 ? (
+                cart.map((cartProduct, key) => (
+                  <tr key={key}>
+                    <td>{cartProduct.id}</td>
+                    <td>{cartProduct.name}</td>
+                    <td>{cartProduct.price}</td>
+                    <td>{cartProduct.quantity}</td>
+                    <td>{cartProduct.totalAmount}</td>
+                    <td>
+                      <div className="d-flex gap-1">
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() => addProductToCart(cartProduct)}
+                        >
+                          +
+                        </button>
+                        <button
+                          className="btn btn-warning btn-sm"
+                          onClick={() => RemoveProductToCart(cartProduct)}
+                        >
+                          -
+                        </button>
                         <button
                           className="btn btn-danger btn-sm"
                           onClick={() => removeProduct(cartProduct)}
                         >
                           Remove
                         </button>
-                      </td>
-                    </tr>
-                  ))
-                : "No Item in Cart"}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No Item in Cart
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
           <h2 className="px-2 text-white">Total Amount: ${totalAmount}</h2>
         </div>
 
+        {/* Payment Section */}
         <div className="mt-3">
           {totalAmount !== 0 ? (
-            <div>
-              <button className="btn btn-primary" onClick={clearCartAndSubmit}>
-                Pay Now
-              </button>
-            </div>
+            <button className="btn btn-primary" onClick={clearCartAndSubmit}>
+              Pay Now
+            </button>
           ) : (
-            "Please add a product to the cart"
+            <p className="text-white">Please add a product to the cart</p>
           )}
+        </div>
+      </div>
+
+      {/* Right Side: Extra Space (4 Columns) */}
+      <div className="col-lg-4">
+        <div className="bg-light p-3 rounded shadow-sm">
+          <h4>Extra Section</h4>
+          <p>
+            This area can be used for customer info, promotions, or analytics.
+          </p>
         </div>
       </div>
     </div>

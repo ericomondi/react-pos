@@ -25,6 +25,7 @@ class ProductsBase(BaseModel):
     price: int
     img_url: str
     stock_quantity: int
+    barcode: int
 
 # class CartItem(BaseModel):
 #     cost: int
