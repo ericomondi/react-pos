@@ -128,32 +128,32 @@ function POSPage() {
     setCart(newCart);
   };
 
-  const handleBarcodeInput = async (barcode) => {
-    try {
-      const token = localStorage.getItem("token");
-      console.log(`Searching for product with barcode: ${barcode}`);
-      const result = await axios.get(
-        `http://localhost:8000/products?barcode=${barcode}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  // const handleBarcodeInput = async (barcode) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     console.log(`Searching for product with barcode: ${barcode}`);
+  //     const result = await axios.get(
+  //       `http://localhost:8000/products?barcode=${barcode}`,
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      if (result.data.length > 0) {
-        console.log("Product found:", result.data[0]);
-        addProductToCart(result.data[0]); // Add the product to the cart
-        toast.success("Product added to cart!");
-      } else {
-        toast.error("Product not found!");
-      }
-    } catch (error) {
-      console.error("Error handling barcode input:", error);
-      toast.error("Error handling barcode input");
-    }
-  };
+  //     if (result.data.length > 0) {
+  //       console.log("Product found:", result.data[0]);
+  //       addProductToCart(result.data[0]); // Add the product to the cart
+  //       toast.success("Product added to cart!");
+  //     } else {
+  //       toast.error("Product not found!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error handling barcode input:", error);
+  //     toast.error("Error handling barcode input");
+  //   }
+  // };
 
   const componentRef = useRef();
 
@@ -248,24 +248,89 @@ function POSPage() {
   // SEARCH LOGIC===================================
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const debounceTimeout = useRef(null);
+
+  const isLikelyBarcode = (text) => /^\d{8,13}$/.test(text.trim());
+
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
+    setActiveIndex(-1);
 
-    if (value.length > 0) {
-      const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filteredProducts);
-    } else {
-      setSuggestions([]);
-    }
+    clearTimeout(debounceTimeout.current);
+    debounceTimeout.current = setTimeout(() => {
+      if (value.length > 0 && !isLikelyBarcode(value)) {
+        const filteredProducts = products.filter((product) =>
+          product.name.toLowerCase().includes(value.toLowerCase())
+        );
+        setSuggestions(filteredProducts);
+      } else {
+        setSuggestions([]); // Hide dropdown for barcode input
+      }
+    }, 300);
   };
+
   const handleSelect = (product) => {
-    setSearchTerm(product.name);
+    setSearchTerm("");
     setSuggestions([]);
+    setActiveIndex(-1);
     addProductToCart(product);
   };
+
+  const handleBarcodeInput = async (barcode) => {
+    const trimmedBarcode = barcode.trim();
+    if (!trimmedBarcode) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const result = await axios.get(
+        `http://localhost:8000/products?barcode=${trimmedBarcode}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (result.data.length > 0) {
+        addProductToCart(result.data[0]);
+        toast.success("Product added to cart!");
+      } else {
+        toast.error("Product not found!");
+      }
+    } catch (error) {
+      console.error("Barcode search error:", error);
+      toast.error("Error handling barcode input");
+    } finally {
+      setSearchTerm(""); // Clear input no matter what
+    }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveIndex((prev) => (prev + 1) % suggestions.length);
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex(
+        (prev) => (prev - 1 + suggestions.length) % suggestions.length
+      );
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+
+      const trimmed = searchTerm.trim();
+
+      if (activeIndex >= 0) {
+        handleSelect(suggestions[activeIndex]);
+      } else if (isLikelyBarcode(trimmed)) {
+        setSuggestions([]); // hide dropdown
+        handleBarcodeInput(trimmed);
+      }
+    }
+  };
+
   return (
     <div className="row">
       {/* Left Side: Cart Area (8 Columns) */}
@@ -278,16 +343,19 @@ function POSPage() {
             placeholder="Search product..."
             value={searchTerm}
             onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
           />
           {suggestions.length > 0 && (
             <ul
               className="list-group position-absolute w-100 shadow"
               style={{ zIndex: 999 }}
             >
-              {suggestions.map((product) => (
+              {suggestions.map((product, index) => (
                 <li
                   key={product.id}
-                  className="list-group-item list-group-item-action"
+                  className={`list-group-item list-group-item-action ${
+                    index === activeIndex ? "active" : ""
+                  }`}
                   onClick={() => handleSelect(product)}
                   style={{ cursor: "pointer" }}
                 >
@@ -297,6 +365,7 @@ function POSPage() {
             </ul>
           )}
         </div>
+
         {/* Hidden Component for Print */}
         <div style={{ display: "none" }}>
           <ComponentToPrint
